@@ -12,6 +12,7 @@ import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.Mapper;
 import org.apache.hadoop.mapreduce.Reducer;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
+import org.apache.hadoop.mapreduce.lib.input.TextInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.apache.hadoop.util.StringUtils;
 import org.apache.hadoop.util.Tool;
@@ -84,7 +85,7 @@ public class TestSecondarySort extends Configured implements Tool {
         Configuration conf = this.getConf();
         Job job = Job.getInstance(conf,"TestMRSecondSort");
         job.setJarByClass(TestSecondarySort.class);
-        job.setInputFormatClass(FileInputFormat.class);
+        job.setInputFormatClass(TextInputFormat.class);
         job.setMapperClass(MyMapper.class);
         job.setMapOutputKeyClass(Text.class);
         job.setMapOutputValueClass(LongWritable.class);
