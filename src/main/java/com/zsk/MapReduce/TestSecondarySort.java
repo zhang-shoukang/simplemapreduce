@@ -57,29 +57,24 @@ public class TestSecondarySort extends Configured implements Tool {
             context.write(okey,ovalue);
         }
     }
-    public static class MyReducer extends Reducer<Text,LongWritable,Text,Text> {
+    public static class MyReducer extends Reducer<Text,LongWritable,Text,LongWritable> {
         private   Text okey;
-        private   Text ovalue;
+        private   LongWritable ovalue;
         @Override
         protected void setup(Context context) throws IOException, InterruptedException {
             super.setup(context);
             okey = new Text();
-            ovalue = new Text();
+            ovalue = new LongWritable();
         }
 
         @Override
         protected void reduce(Text key, Iterable<LongWritable> values, Context context) throws IOException, InterruptedException {
             okey.set(key.toString());
             Iterator<LongWritable> iterator = values.iterator();
-            StringBuilder stringBuilder = new StringBuilder();
             while (iterator.hasNext()){
-
                 LongWritable next = iterator.next();
-                stringBuilder.append(next);
+                context.write(okey,next);
             }
-            ovalue.set(stringBuilder.toString());
-            context.write(okey,ovalue);
-
         }
     }
     @Override
