@@ -83,6 +83,7 @@ public class TestSecondarySort extends Configured implements Tool {
         String outPath = args[1];
         Configuration conf = this.getConf();
         Job job = Job.getInstance(conf,"TestMRSecondSort");
+        job.setJarByClass(TestSecondarySort.class);
         job.setInputFormatClass(FileInputFormat.class);
         job.setMapperClass(MyMapper.class);
         job.setMapOutputKeyClass(Text.class);
