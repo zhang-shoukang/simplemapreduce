@@ -8,7 +8,9 @@ import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.Mapper;
 import org.apache.hadoop.mapreduce.Reducer;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
+import org.apache.hadoop.mapreduce.lib.input.TextInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
+import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
 
 import java.io.IOException;
 import java.util.StringTokenizer;
@@ -18,49 +20,56 @@ import java.util.StringTokenizer;
  **/
 public class WordCount {
 
-    public static class TokenizerMapper
-            extends Mapper<Object, Text, Text, IntWritable>{
-
-        private final static IntWritable one = new IntWritable(1);
-        private Text word = new Text();
-
-        public void map(Object key, Text value, Context context
-        ) throws IOException, InterruptedException {
-            StringTokenizer itr = new StringTokenizer(value.toString());
-            while (itr.hasMoreTokens()) {
-                word.set(itr.nextToken());
-                context.write(word, one);
+    public static class MyMapper extends Mapper<IntWritable,Text,Text,IntWritable>{
+        Text text = new Text();
+        IntWritable pairValue = new IntWritable(1);
+        @Override
+        protected void map(IntWritable key, Text value, Context context) throws IOException, InterruptedException{
+            StringTokenizer stringTokenizer = new StringTokenizer(value.toString());
+            while (stringTokenizer.hasMoreTokens()){
+                text.set(stringTokenizer.nextToken().toString());
+                context.write(text,pairValue);
             }
         }
     }
-
-    public static class IntSumReducer
-            extends Reducer<Text,IntWritable,Text,IntWritable> {
-        private IntWritable result = new IntWritable();
-
-        public void reduce(Text key, Iterable<IntWritable> values,
-                           Context context
-        ) throws IOException, InterruptedException {
-            int sum = 0;
-            for (IntWritable val : values) {
-                sum += val.get();
+    public static class MyReducer extends Reducer<Text,IntWritable,Text,IntWritable> {
+        IntWritable intWritable = new IntWritable();
+        @Override
+        protected void reduce(Text key, Iterable<IntWritable> values, Context context) throws IOException, InterruptedException {
+            int sum=0;
+            for (IntWritable value : values) {
+                sum+=value.get();
             }
-            result.set(sum);
-            context.write(key, result);
+            intWritable.set(sum);
+            context.write(key,intWritable);
         }
     }
-
-    public static void main(String[] args) throws Exception {
-        Configuration conf = new Configuration();
-        Job job = Job.getInstance(conf, "word count");
+    public static int run(String[] args) throws Exception{
+        Configuration configuration = new Configuration();
+        Job job = Job.getInstance(configuration, "WordCount");
         job.setJarByClass(WordCount.class);
-        job.setMapperClass(TokenizerMapper.class);
-        job.setCombinerClass(IntSumReducer.class);
-        job.setReducerClass(IntSumReducer.class);
+        //input
+        FileInputFormat.addInputPath(job,new Path(args[0]));
+
+        job.setInputFormatClass(TextInputFormat.class);
+        job.setMapOutputKeyClass(Text.class);
+        job.setMapOutputValueClass(IntWritable.class);
+
+        job.setMapperClass(MyMapper.class);
+        //shuffle
+        job.setReducerClass(MyReducer.class);
+
         job.setOutputKeyClass(Text.class);
         job.setOutputValueClass(IntWritable.class);
-        FileInputFormat.addInputPath(job, new Path(args[0]));
-        FileOutputFormat.setOutputPath(job, new Path(args[1]));
-        System.exit(job.waitForCompletion(true) ? 0 : 1);
+        job.setOutputFormatClass(TextOutputFormat.class);
+
+        FileOutputFormat.setOutputPath(job,new Path(args[1]));
+
+        return job.waitForCompletion(true)?0:1;
+    }
+
+    public static void main(String[] args) throws Exception{
+        int status = run(args);
+        System.exit(status);
     }
 }
