@@ -4,6 +4,14 @@
     <artifactId>mr</artifactId>
     <version>0.0.1</version>
 
+    <repositories>
+        <repository>
+            <id>cloudera</id>
+            <url>https://repository.cloudera.com/artifactory/cloudera-repos/</url>
+        </repository>
+    </repositories>
+
+
     <name>simplemapreduce</name>
     <build>
         <plugins>
