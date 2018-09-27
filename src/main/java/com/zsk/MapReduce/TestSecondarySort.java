@@ -103,6 +103,8 @@ public class TestSecondarySort extends Configured implements Tool {
     public static class MyGroupingComparator extends WritableComparator{
         @Override
         public int compare(WritableComparable a, WritableComparable b) {
+            System.out.println(a.toString());
+            System.out.println(b.toString());
             String first = StringUtils.split(a.toString(), '&')[0];
             String second = StringUtils.split(b.toString(), '&')[0];
             return first.compareTo(second);
