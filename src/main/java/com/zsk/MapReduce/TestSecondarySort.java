@@ -45,6 +45,7 @@ public class TestSecondarySort extends Configured implements Tool {
             String values = split[1];
             okey.set(keys+'&'+values);
             ovalue.set(Integer.parseInt(values));
+            System.out.println(okey.toString()+"__________________"+ovalue.toString());
             context.write(okey,ovalue);
         }
     }
@@ -97,14 +98,15 @@ public class TestSecondarySort extends Configured implements Tool {
         @Override
         public int getPartition(Text key, Text value, int numPartitions) {
             String[] split = StringUtils.split(key.toString());
+            System.out.println(split[0]+"_____________to partitons");
             return split[0].hashCode()%numPartitions;
         }
     }
     public static class MyGroupingComparator extends WritableComparator{
         @Override
         public int compare(WritableComparable a, WritableComparable b) {
-            System.out.println(a.toString());
-            System.out.println(b.toString());
+            System.out.println("____________---"+a.toString());
+            System.out.println("____________---"+b.toString());
             String first = StringUtils.split(a.toString(), '&')[0];
             String second = StringUtils.split(b.toString(), '&')[0];
             return first.compareTo(second);
