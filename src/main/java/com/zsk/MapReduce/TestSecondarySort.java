@@ -31,14 +31,8 @@ import java.util.Iterator;
 public class TestSecondarySort extends Configured implements Tool {
 
     public static class MyMapper extends Mapper<LongWritable,Text,Text,LongWritable>{
-        private  Text okey;
-        private  LongWritable ovalue;
-        @Override
-        protected void setup(Context context) throws IOException, InterruptedException {
-            super.setup(context);
-            okey = new Text();
-            ovalue = new LongWritable();
-        }
+        private  Text okey = new Text();
+        private  LongWritable ovalue = new LongWritable();
 
         @Override
         protected void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException {
@@ -53,12 +47,7 @@ public class TestSecondarySort extends Configured implements Tool {
         }
     }
     public static class MyReducer extends Reducer<Text,LongWritable,Text,LongWritable> {
-        private   Text okey;
-        @Override
-        protected void setup(Context context) throws IOException, InterruptedException {
-            okey = new Text();
-        }
-
+        private   Text okey = new Text();
         @Override
         protected void reduce(Text key, Iterable<LongWritable> values, Context context) throws IOException, InterruptedException {
             okey.set(key.toString());
@@ -94,6 +83,7 @@ public class TestSecondarySort extends Configured implements Tool {
 
         FileInputFormat.addInputPath(job,new Path(inPath));
         FileOutputFormat.setOutputPath(job,new Path(outPath));
+
         return job.waitForCompletion(true) ? 0 : 1;
     }
 
