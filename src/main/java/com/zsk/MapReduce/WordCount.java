@@ -45,6 +45,8 @@ public class WordCount {
             context.write(key,intWritable);
         }
     }
+
+
     public static int run(String[] args) throws Exception{
         Configuration configuration = new Configuration();
         Job job = Job.getInstance(configuration, "WordCount");
