@@ -3,6 +3,7 @@ package com.zsk.MapReduce;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.IntWritable;
+import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.Mapper;
@@ -20,11 +21,11 @@ import java.util.StringTokenizer;
  **/
 public class WordCount {
 
-    public static class MyMapper extends Mapper<IntWritable,Text,Text,IntWritable>{
+    public static class MyMapper extends Mapper<LongWritable,Text,Text,IntWritable>{
         Text text = new Text();
         IntWritable pairValue = new IntWritable(1);
         @Override
-        protected void map(IntWritable key, Text value, Context context) throws IOException, InterruptedException{
+        protected void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException{
             StringTokenizer stringTokenizer = new StringTokenizer(value.toString());
             while (stringTokenizer.hasMoreTokens()){
                 text.set(stringTokenizer.nextToken().toString());
