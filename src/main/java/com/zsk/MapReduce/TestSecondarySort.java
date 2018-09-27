@@ -30,14 +30,9 @@ import java.util.Iterator;
  */
 public class TestSecondarySort extends Configured implements Tool {
 
-    @Override
-    public void setConf(Configuration conf) {
-        super.setConf(conf);
-
-    }
     public static class MyMapper extends Mapper<LongWritable,Text,Text,LongWritable>{
-        private   Text okey;
-        private   LongWritable ovalue;
+        private  Text okey;
+        private  LongWritable ovalue;
         @Override
         protected void setup(Context context) throws IOException, InterruptedException {
             super.setup(context);
@@ -47,8 +42,7 @@ public class TestSecondarySort extends Configured implements Tool {
 
         @Override
         protected void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException {
-            String resLine = "";
-            String[] split = StringUtils.split(value.toString(), ',');
+            String[] split = StringUtils.split(value.toString());
             if (split.length!=2)
                 return;
             String keys = split[0];
@@ -60,12 +54,9 @@ public class TestSecondarySort extends Configured implements Tool {
     }
     public static class MyReducer extends Reducer<Text,LongWritable,Text,LongWritable> {
         private   Text okey;
-        private   LongWritable ovalue;
         @Override
         protected void setup(Context context) throws IOException, InterruptedException {
-            super.setup(context);
             okey = new Text();
-            ovalue = new LongWritable();
         }
 
         @Override
@@ -85,18 +76,21 @@ public class TestSecondarySort extends Configured implements Tool {
         Configuration conf = this.getConf();
         Job job = Job.getInstance(conf,"TestMRSecondSort");
         job.setJarByClass(TestSecondarySort.class);
+
         job.setInputFormatClass(TextInputFormat.class);
+
         job.setMapperClass(MyMapper.class);
         job.setMapOutputKeyClass(Text.class);
         job.setMapOutputValueClass(LongWritable.class);
 
+        job.setPartitionerClass(MyPartitionr.class);
+        job.setGroupingComparatorClass(MyGroupingComparator.class);
+
         job.setReducerClass(MyReducer.class);
         job.setOutputKeyClass(Text.class);
         job.setOutputValueClass(LongWritable.class);
-        job.setOutputFormatClass(FileOutputFormat.class);
 
-        job.setPartitionerClass(MyPartitionr.class);
-        job.setGroupingComparatorClass(MyGroupingComparator.class);
+        job.setOutputFormatClass(FileOutputFormat.class);
 
         FileInputFormat.addInputPath(job,new Path(inPath));
         FileOutputFormat.setOutputPath(job,new Path(outPath));
