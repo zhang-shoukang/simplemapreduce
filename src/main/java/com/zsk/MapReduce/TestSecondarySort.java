@@ -21,6 +21,7 @@ import org.apache.hadoop.util.ToolRunner;
 
 import java.io.IOException;
 import java.util.Iterator;
+import java.util.StringTokenizer;
 
 /**
  * Create by zsk on 2018/9/12
@@ -95,7 +96,8 @@ public class TestSecondarySort extends Configured implements Tool {
     public static class MyPartitionr extends org.apache.hadoop.mapreduce.Partitioner<Text,Text>{
         @Override
         public int getPartition(Text key, Text value, int numPartitions) {
-            return key.toString().hashCode()%numPartitions;
+            String[] split = StringUtils.split(key.toString());
+            return split[0].hashCode()%numPartitions;
         }
     }
     public static class MyGroupingComparator extends WritableComparator{
