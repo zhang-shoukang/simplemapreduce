@@ -25,7 +25,7 @@ public class DBTestMR extends Configured implements Tool {
     public int run(String[] args) throws Exception {
         Configuration configuration = new Configuration();
         Job job = Job.getInstance(configuration, this.getClass().getSimpleName() + new Date());
-        DistributedCache.addFileToClassPath(new Path("/tmp/jars/mysql-connector-java-5.1.6.jar"),configuration);
+        DistributedCache.addFileToClassPath(new Path("/tmp/jars/mysql-connector-java-5.1.47.jar"),configuration);
         job.setJarByClass(this.getClass());
         job.setMapperClass(MyDBTestMapper.class);
         job.setReducerClass(MyDBTestReducer.class);
