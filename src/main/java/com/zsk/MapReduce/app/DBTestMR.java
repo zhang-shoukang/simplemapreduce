@@ -5,12 +5,10 @@ import com.zsk.MapReduce.mapreduce.MyDBTestMapper;
 import com.zsk.MapReduce.mapreduce.MyDBTestReducer;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.conf.Configured;
-import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.NullWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Job;
-import org.apache.hadoop.mapreduce.filecache.DistributedCache;
 import org.apache.hadoop.util.Tool;
 import org.apache.hadoop.util.ToolRunner;
 
@@ -25,7 +23,8 @@ public class DBTestMR extends Configured implements Tool {
     public int run(String[] args) throws Exception {
         Configuration configuration = new Configuration();
         Job job = Job.getInstance(configuration, this.getClass().getSimpleName() + new Date());
-        DistributedCache.addFileToClassPath(new Path("hdfs://hadoop000:8020/tmp/jars/mysql-connector-java-5.1.47.jar"),configuration);
+        //DistributedCache.addFileToClassPath(new Path("hdfs://hadoop000:8020/tmp/jars/mysql-connector-java-5.1.47.jar"),configuration);
+
         job.setJarByClass(this.getClass());
         job.setMapperClass(MyDBTestMapper.class);
         job.setReducerClass(MyDBTestReducer.class);
