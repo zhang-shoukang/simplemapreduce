@@ -29,7 +29,6 @@ public class DBTestMR extends Configured implements Tool {
         job.setJarByClass(this.getClass());
         job.setMapperClass(MyDBTestMapper.class);
         job.setReducerClass(MyDBTestReducer.class);
-
         job.setOutputKeyClass(StudentinfoRecord.class);
         job.setOutputValueClass(NullWritable.class);
         job.setMapOutputValueClass(LongWritable.class);
@@ -37,7 +36,7 @@ public class DBTestMR extends Configured implements Tool {
 
         job.setInputFormatClass(org.apache.hadoop.mapreduce.lib.db.DBInputFormat.class);
         job.setOutputFormatClass(org.apache.hadoop.mapreduce.lib.db.DBOutputFormat.class);
-        org.apache.hadoop.mapreduce.lib.db.DBConfiguration.configureDB(job.getConfiguration(), "com.mysql.jdbc.Driver", "jdbc:mysql://localhost:3306/testmr",
+        org.apache.hadoop.mapreduce.lib.db.DBConfiguration.configureDB(configuration, "com.mysql.jdbc.Driver", "jdbc:mysql://localhost:3306/testmr",
                 "root", "root");
         org.apache.hadoop.mapreduce.lib.db.DBInputFormat.setInput(job, StudentinfoRecord.class, "select id,name from t","select count(1) from t");
         org.apache.hadoop.mapreduce.lib.db.DBOutputFormat.setOutput(job,"t2",StudentinfoRecord.FIELDS);
