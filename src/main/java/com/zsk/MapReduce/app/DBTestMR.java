@@ -22,7 +22,7 @@ public class DBTestMR extends Configured implements Tool {
     }
     @Override
     public int run(String[] args) throws Exception {
-        Configuration configuration = new Configuration();
+        Configuration configuration = this.getConf();
         Job job = Job.getInstance(configuration, this.getClass().getSimpleName() + new Date());
         //DistributedCache.addFileToClassPath(new Path("hdfs://hadoop000:8020/tmp/jars/mysql-connector-java-5.1.47.jar"),configuration);
         job.addFileToClassPath(new Path("/tmp/jars/mysql-connector-java-5.1.47.jar"));
@@ -40,6 +40,6 @@ public class DBTestMR extends Configured implements Tool {
                 "root", "root");
         org.apache.hadoop.mapreduce.lib.db.DBInputFormat.setInput(job, StudentinfoRecord.class, "select id,name from t","select count(1) from t");
         org.apache.hadoop.mapreduce.lib.db.DBOutputFormat.setOutput(job,"t2",StudentinfoRecord.FIELDS);
-        return job.waitForCompletion(true)?1:0;
+        return job.waitForCompletion(true)?0:1;
     }
 }
